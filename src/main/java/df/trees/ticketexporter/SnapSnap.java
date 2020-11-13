@@ -2,12 +2,15 @@ package df.trees.ticketexporter;
 
 public class SnapSnap {
 
-	public String ZD_USERNAME = "eldien.hasmanto@treessolutions.com";
-	public String ZD_PASSWORD = "W3lcome123";
+//	public String ZD_USERNAME = "eldien.hasmanto@treessolutions.com";
+//	public String ZD_PASSWORD = "W3lcome123";
+
+	public String ZD_USERNAME = "eka.nuryulita@hydroclean.id";
+	public String ZD_PASSWORD = "Welcome123";
 
 	public Boolean INC_COMMENTS = true;
 	public Boolean INC_METRICS = true;
-	public Boolean JAR_RUN = true;
+	public Boolean JAR_RUN = false;
 	public Boolean FIRST_PAGE_ONLY = false;
 
 	public String ZD_TICKET_API = "/api/v2/tickets.json";

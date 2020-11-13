@@ -24,11 +24,12 @@ public class App {
 		GetTicketMetricsEvent metricsEvent = new GetTicketMetricsEvent();
 		String domain = "";
 		int incrementalParameter = 1;
+		
 
-		OBJECT_RUN objectRun = OBJECT_RUN.METRIC_EVENTS;
+		OBJECT_RUN objectRun = OBJECT_RUN.TICKETS;
 
 		if (!snap.JAR_RUN) {
-			domain = "con-trees";
+			domain = "hydroclean-cs";
 			incrementalParameter = 1;
 		} else {
 			try {
