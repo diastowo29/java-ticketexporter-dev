@@ -22,14 +22,14 @@ public class GetTickets {
 
 	int ticketPageCounter = 0;
 
-	public void doGetTicketFields(String ticketFieldsApi, String ticketApi, String zdDomain) {
+	public void doGetTicketFields(String ticketFieldsApi, String ticketApi, String zdDomain, String endTime) {
 		System.out.println("=== Getting all ticket fields ===");
 		Unirest.get(ticketFieldsApi).basicAuth(zD_Username, zD_Password).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode ticketListObj = response.getBody();
 
 			this.ticketFieldsList = ticketListObj.getObject().getJSONArray("ticket_fields");
-			doGetTickets(ticketApi, zdDomain);
+			doGetTickets(ticketApi, zdDomain, endTime);
 
 		}).ifFailure(response -> {
 			System.out.println("=== GET TICKET FIELDS - FAIL ===");
@@ -38,12 +38,17 @@ public class GetTickets {
 		});
 	}
 
-	public void doGetTickets(String ticketApi, String zdDomain) {
+	public void doGetTickets(String ticketApi, String zdDomain, String endTime) {
 		ticketPageCounter++;
 		System.out.print("Calling: " + ticketApi + " ");
 		Unirest.get(ticketApi).basicAuth(zD_Username, zD_Password).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode ticketObj = response.getBody();
+			
+			System.out.println(Integer.parseInt(endTime));
+			System.out.println(ticketObj.getObject().getLong("end_time"));
+			
+			System.out.println(Integer.parseInt(endTime) == ticketObj.getObject().getLong("end_time"));
 
 			JSONArray ticketList = ticketObj.getObject().getJSONArray("tickets");
 
@@ -78,13 +83,17 @@ public class GetTickets {
 			}
 
 			if (!snap.FIRST_PAGE_ONLY) {
-				if (ticketObj.getObject().get("next_page") != null) {
-					if (ticketObj.getObject().has("end_of_stream")) {
-						if (!ticketObj.getObject().getBoolean("end_of_stream")) {
-							doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain);
+				if (!endTime.equals("0")) {
+					if (Integer.parseInt(endTime) != ticketObj.getObject().getLong("end_time")) {
+						if (ticketObj.getObject().get("next_page") != null) {
+							if (ticketObj.getObject().has("end_of_stream")) {
+								if (!ticketObj.getObject().getBoolean("end_of_stream")) {
+									doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, endTime);
+								}
+							} else {
+								doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, endTime);	
+							}
 						}
-					} else {
-						doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain);	
 					}
 				}
 			}
