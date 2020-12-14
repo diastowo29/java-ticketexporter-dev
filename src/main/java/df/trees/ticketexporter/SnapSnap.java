@@ -9,7 +9,7 @@ public class SnapSnap {
 	public String ZD_PASSWORD = "Welcome123";
 
 	public Boolean INC_COMMENTS = true;
-	public Boolean INC_METRICS = true;
+	public Boolean INC_METRICS = false;
 	public Boolean JAR_RUN = false;
 	public Boolean FIRST_PAGE_ONLY = false;
 
@@ -30,14 +30,14 @@ public class SnapSnap {
 	}
 
 	public String ZD_USER_API (String zdDomain) {
-		return "https://" + zdDomain + ".zendesk.com/api/v2/users.json";
+		return "https://" + zdDomain + ".zendesk.com/api/v2/users.json?page=1222";
 	}
 	
 	public String ZD_TICKET_FIELDS_API (String zdDomain) {
 		return "https://" + zdDomain + ".zendesk.com/api/v2/ticket_fields.json";
 	}
 	
-	public String ZD_TICKET_INCREMENTAL_API (long unixTime, String zdDomain) {
+	public String ZD_TICKET_INCREMENTAL_API (String unixTime, String zdDomain) {
 		return "https://" + zdDomain + ".zendesk.com/api/v2/incremental/tickets.json?start_time=" + unixTime;
 	}
 	

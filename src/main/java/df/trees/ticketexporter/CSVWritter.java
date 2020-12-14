@@ -163,11 +163,11 @@ public class CSVWritter {
 				if (snap.INC_COMMENTS) {
 					if (ticketList.getJSONObject(i).has("comments")) {
 						for (int j = ticketList.getJSONObject(i).getJSONArray("comments").length() - 1; j > -1; j--) {
-							if (!gotAgentReply) {
-								if (ticketList.getJSONObject(i).getJSONArray("comments").getJSONObject(j)
-										.getString("body").contains("#StatusSolved")
-										|| ticketList.getJSONObject(i).getJSONArray("comments").getJSONObject(j)
-												.getString("body").contains("#StatusPending")) {
+//							if (!gotAgentReply) {
+//								if (ticketList.getJSONObject(i).getJSONArray("comments").getJSONObject(j)
+//										.getString("body").contains("#StatusSolved")
+//										|| ticketList.getJSONObject(i).getJSONArray("comments").getJSONObject(j)
+//												.getString("body").contains("#StatusPending")) {
 									try {
 										cbw.write(ticketList.getJSONObject(i).get("id").toString() + "|"
 												+ ticketList.getJSONObject(i).getJSONArray("comments").getJSONObject(j)
@@ -187,8 +187,8 @@ public class CSVWritter {
 									}
 									cbw.newLine();
 									gotAgentReply = true;
-								}
-							}
+//								}
+//							}
 						}
 					}
 				}
@@ -271,11 +271,15 @@ public class CSVWritter {
 						if (usersList.getJSONObject(i).getJSONObject("user_fields").names() != null) {
 							for (int k = 0; k < usersList.getJSONObject(i).getJSONObject("user_fields").names()
 									.length(); k++) {
-								bw.write(
-										usersList.getJSONObject(i).getJSONObject("user_fields")
-												.get(usersList.getJSONObject(i).getJSONObject("user_fields").names()
-														.getString(k))
-												.toString().replaceAll("[\\t\\n\\r]+", " ") + "|");
+								try {
+									bw.write(
+											usersList.getJSONObject(i).getJSONObject("user_fields")
+													.get(usersList.getJSONObject(i).getJSONObject("user_fields").names()
+															.getString(k))
+													.toString().replaceAll("[\\t\\n\\r]+", " ") + "|");
+								} catch (NullPointerException e) {
+									bw.write(" - |");
+								}
 							}
 						}
 					}

@@ -1,8 +1,5 @@
 package df.trees.ticketexporter;
 
-import java.util.Calendar;
-import java.util.Date;
-
 /**
  * Hello world!
  *
@@ -23,23 +20,29 @@ public class App {
 		// TICKET INCREMENTAL
 		GetTicketMetricsEvent metricsEvent = new GetTicketMetricsEvent();
 		String domain = "";
-		int incrementalParameter = 1;
 		
+		String startTime = "";
+		String endTime = "";
 
-		OBJECT_RUN objectRun = OBJECT_RUN.TICKETS;
+		OBJECT_RUN objectRun = OBJECT_RUN.USERS;
 
 		if (!snap.JAR_RUN) {
 			domain = "hydroclean-cs";
-			incrementalParameter = 1;
+			startTime = "1598572800";
+			endTime = "1609286400";
+			
 		} else {
 			try {
 				domain = args[0].toString();
 				switch (objectRun) {
 				case TICKETS:
-					incrementalParameter = Integer.parseInt(args[1].toString());
+					startTime = args[1].toString();
+					endTime = args[2].toString();
+					
+//					incrementalParameter = Integer.parseInt(args[1].toString());
 					break;
 				case METRIC_EVENTS:
-					incrementalParameter = Integer.parseInt(args[1].toString());
+//					incrementalParameter = Integer.parseInt(args[1].toString());
 					break;
 				default:
 					break;
@@ -50,19 +53,19 @@ public class App {
 			}
 		}
 
-		Date date = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-
-		// REDUCE MONTH
-		cal.add(Calendar.MONTH, -incrementalParameter);
-		long unixTime = (cal.getTimeInMillis() / 1000L);
+//		Date date = new Date();
+//		Calendar cal = Calendar.getInstance();
+//		cal.setTime(date);
+//
+//		// REDUCE MONTH
+//		cal.add(Calendar.MONTH, -incrementalParameter);
+//		long unixTime = (cal.getTimeInMillis() / 1000L);
 
 		switch (objectRun) {
 		case TICKETS:
 			/* START FROM TICKET FIELDS */
 			tickets.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(domain),
-					snap.ZD_TICKET_INCREMENTAL_API(unixTime, domain), domain);
+					snap.ZD_TICKET_INCREMENTAL_API(startTime, domain), domain, endTime);
 			break;
 		case TICKET_FIELDS:
 			ticketFields.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(domain), domain);
@@ -77,7 +80,7 @@ public class App {
 			brands.doGetBrands(snap.ZD_BRAND_API(domain), domain);
 			break;
 		case METRIC_EVENTS:
-			metricsEvent.doGetMetricsEvent(snap.ZD_TICKETEVENT_INCREMENTAL_API(unixTime, domain), domain);
+//			metricsEvent.doGetMetricsEvent(snap.ZD_TICKETEVENT_INCREMENTAL_API(unixTime, domain), domain);
 			break;
 		default:
 			System.out.println("DEFAULT");
