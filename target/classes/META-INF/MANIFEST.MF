@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-Built-By: DIASTOWO
+Built-By: USER
 Class-Path: lib/unirest-java-3.4.01.jar lib/httpclient-4.5.9.jar lib/h
  ttpcore-4.4.11.jar lib/commons-logging-1.2.jar lib/commons-codec-1.11
  .jar lib/httpmime-4.5.9.jar lib/httpcore-nio-4.4.11.jar lib/httpasync
  client-4.1.4.jar lib/gson-2.8.5.jar lib/emoji-java-4.0.0.jar lib/json
  -20170516.jar
-Build-Jdk: 1.8.0_171
+Build-Jdk: 1.8.0_251
 Created-By: Maven Integration for Eclipse
 Main-Class: df.trees.ticketexporter.App
 
