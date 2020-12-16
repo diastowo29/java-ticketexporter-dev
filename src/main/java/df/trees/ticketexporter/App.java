@@ -35,21 +35,12 @@ public class App {
 
 		OBJECT_RUN objectRun = OBJECT_RUN.TICKETS;
 
-//		Date date = new Date();
-//		Calendar cal = Calendar.getInstance();
-//		cal.setTime(date);
-//
-//		// REDUCE MONTH
-//		cal.add(Calendar.DATE, -incrementalParameter);
-//		long unixTime = (cal.getTimeInMillis() / 1000L);
-
 		System.out.println("=== EXPORT DOMAIN: " + newDomain + " ===");
 		System.out.println("=== TIMESTAMP START: " + timeStart + " ===");
 		System.out.println("=== TIMESTAMP END: " + timeEnd + " ===");
 
 		switch (objectRun) {
 		case TICKETS:
-			/* START FROM TICKET FIELDS */
 			tickets.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(newDomain),
 					snap.ZD_TICKET_INCREMENTAL_API(timeStart, newDomain), newDomain, newUsername, newPassowrd, timeEnd);
 			break;
@@ -98,8 +89,8 @@ public class App {
 
 			JSONObject jsonObject = (JSONObject) obj;
 			configJson = jsonObject;
-			
-			/*CHECKING ALL VALUE*/
+
+			/* CHECKING ALL VALUE */
 			configJson.get("domain").toString();
 			configJson.get("username").toString();
 			configJson.get("password").toString();

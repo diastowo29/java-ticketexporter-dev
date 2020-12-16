@@ -3,7 +3,7 @@ package df.trees.ticketexporter;
 public class SnapSnap {
 	public Boolean INC_COMMENTS = true;
 	public Boolean INC_METRICS = true;
-	public Boolean JAR_RUN = false;
+	public Boolean JAR_RUN = true;
 	public Boolean FIRST_PAGE_ONLY = false;
 
 	public String ZD_TICKET_API = "/api/v2/tickets.json";

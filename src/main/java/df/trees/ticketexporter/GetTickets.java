@@ -61,7 +61,7 @@ public class GetTickets {
 								+ " already deleted, skip comments");
 					}
 				}
-
+				
 				if (snap.INC_METRICS) {
 					doGetTicketMetrics(ticketId, zdDomain, username, password);
 				}
