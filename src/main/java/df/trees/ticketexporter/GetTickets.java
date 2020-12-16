@@ -21,14 +21,14 @@ public class GetTickets {
 	int ticketPageCounter = 0;
 
 	public void doGetTicketFields(String ticketFieldsApi, String ticketApi, String zdDomain, String username,
-			String password) {
+			String password, long endTime) {
 		System.out.println("=== Getting all ticket fields ===");
 		Unirest.get(ticketFieldsApi).basicAuth(username, password).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode ticketListObj = response.getBody();
 
 			this.ticketFieldsList = ticketListObj.getObject().getJSONArray("ticket_fields");
-			doGetTickets(ticketApi, zdDomain, username, password);
+			doGetTickets(ticketApi, zdDomain, username, password, endTime);
 
 		}).ifFailure(response -> {
 			System.out.println("=== GET TICKET FIELDS - FAIL ===");
@@ -37,7 +37,7 @@ public class GetTickets {
 		});
 	}
 
-	public void doGetTickets(String ticketApi, String zdDomain, String username, String password) {
+	public void doGetTickets(String ticketApi, String zdDomain, String username, String password, long endTime) {
 		ticketPageCounter++;
 		System.out.print("Calling: " + ticketApi + " ");
 		Unirest.get(ticketApi).basicAuth(username, password).asJson().ifSuccess(response -> {
@@ -52,13 +52,9 @@ public class GetTickets {
 
 				if (snap.INC_COMMENTS) {
 					if (!ticketList.getJSONObject(i).getString("status").equals("deleted")) {
-						if (!(ticketList.getJSONObject(i).get("id").toString().equals("326")
-								|| ticketList.getJSONObject(i).get("id").toString().equals("539"))) {
-							doGetTicketCommments(ticketId, zdDomain, username, password);
-							if (commentSuccess) {
-								ticketList.getJSONObject(i).put("comments", commentsList);
-//								ticketList.getJSONObject(i).put("user_involved", usersList);
-							}
+						doGetTicketCommments(ticketId, zdDomain, username, password);
+						if (commentSuccess) {
+							ticketList.getJSONObject(i).put("comments", commentsList);
 						}
 					} else {
 						System.out.println("Ticket ID: " + ticketList.getJSONObject(i).get("id")
@@ -78,15 +74,21 @@ public class GetTickets {
 			}
 
 			if (!snap.FIRST_PAGE_ONLY) {
-				if (ticketObj.getObject().get("next_page") != null) {
-					if (ticketObj.getObject().has("end_of_stream")) {
-						if (!ticketObj.getObject().getBoolean("end_of_stream")) {
-							doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username,
-									password);
+				if (endTime != 0) {
+					if (ticketObj.getObject().getLong("end_time") < endTime) {
+						if (ticketObj.getObject().get("next_page") != null) {
+							if (ticketObj.getObject().has("end_of_stream")) {
+								if (!ticketObj.getObject().getBoolean("end_of_stream")) {
+									doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username,
+											password, endTime);
+								}
+							} else {
+								doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username, password, endTime);
+							}
 						}
-					} else {
-						doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username, password);
 					}
+				} else {
+					doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username, password, endTime);
 				}
 			}
 		}).ifFailure(response -> {

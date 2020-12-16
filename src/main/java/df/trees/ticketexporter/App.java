@@ -2,8 +2,6 @@ package df.trees.ticketexporter;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,53 +25,33 @@ public class App {
 		// GetTicketMetrics metrics = new GetTicketMetrics(); // ALREADY INCLUDE ON
 		// TICKET INCREMENTAL
 		GetTicketMetricsEvent metricsEvent = new GetTicketMetricsEvent();
-		int incrementalParameter = 1;
 
 		String newDomain = configJson.get("domain").toString();
 		String newUsername = configJson.get("username").toString();
 		String newPassowrd = configJson.get("password").toString();
 
-		OBJECT_RUN objectRun = OBJECT_RUN.SCHEDULE;
+		long timeStart = (long) configJson.get("start_time");
+		long timeEnd = (long) configJson.get("end_time");
 
-//		if (!snap.JAR_RUN) {
-//			domain = newDomain;
-//			incrementalParameter = 1;
-//		} else {
-//			try {
-//				domain = args[0].toString();
-//				switch (objectRun) {
-//				case TICKETS:
-//					incrementalParameter = Integer.parseInt(args[1].toString());
-//					break;
-//				case METRIC_EVENTS:
-//					incrementalParameter = Integer.parseInt(args[1].toString());
-//					break;
-//				default:
-//					break;
-//				}
-//			} catch (IndexOutOfBoundsException e) {
-//				System.out.println("===== PARAMETER NULL =====");
-//				System.exit(0);
-//			}
-//		}
+		OBJECT_RUN objectRun = OBJECT_RUN.TICKETS;
 
-		Date date = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-
-		// REDUCE MONTH
-		cal.add(Calendar.DATE, -incrementalParameter);
-		long unixTime = (cal.getTimeInMillis() / 1000L);
+//		Date date = new Date();
+//		Calendar cal = Calendar.getInstance();
+//		cal.setTime(date);
+//
+//		// REDUCE MONTH
+//		cal.add(Calendar.DATE, -incrementalParameter);
+//		long unixTime = (cal.getTimeInMillis() / 1000L);
 
 		System.out.println("=== EXPORT DOMAIN: " + newDomain + " ===");
-		System.out.println("=== DOMAIN USERNAME: " + newUsername + " ===");
-		System.out.println("=== DOMAIN PASSWORD: " + newPassowrd + " ===");
+		System.out.println("=== TIMESTAMP START: " + timeStart + " ===");
+		System.out.println("=== TIMESTAMP END: " + timeEnd + " ===");
 
 		switch (objectRun) {
 		case TICKETS:
 			/* START FROM TICKET FIELDS */
 			tickets.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(newDomain),
-					snap.ZD_TICKET_INCREMENTAL_API(unixTime, newDomain), newDomain, newUsername, newPassowrd);
+					snap.ZD_TICKET_INCREMENTAL_API(timeStart, newDomain), newDomain, newUsername, newPassowrd, timeEnd);
 			break;
 		case TICKET_FIELDS:
 			ticketFields.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(newDomain), newDomain, newUsername, newPassowrd);
@@ -88,7 +66,7 @@ public class App {
 			brands.doGetBrands(snap.ZD_BRAND_API(newDomain), newDomain, newUsername, newPassowrd);
 			break;
 		case METRIC_EVENTS:
-			metricsEvent.doGetMetricsEvent(snap.ZD_TICKETEVENT_INCREMENTAL_API(unixTime, newDomain), newDomain,
+			metricsEvent.doGetMetricsEvent(snap.ZD_TICKETEVENT_INCREMENTAL_API(timeStart, newDomain), newDomain,
 					newUsername, newPassowrd);
 			break;
 		case SCHEDULE:
@@ -120,9 +98,16 @@ public class App {
 
 			JSONObject jsonObject = (JSONObject) obj;
 			configJson = jsonObject;
+			
+			/*CHECKING ALL VALUE*/
+			configJson.get("domain").toString();
+			configJson.get("username").toString();
+			configJson.get("password").toString();
+			configJson.get("start_time").toString();
+			configJson.get("end_time").toString();
 
 		} catch (Exception e) {
-			System.out.println("===== CONFIG NULL =====");
+			System.out.println("===== CONFIG IS NULL =====");
 			System.exit(0);
 		}
 		return configJson;

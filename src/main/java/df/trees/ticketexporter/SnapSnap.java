@@ -3,17 +3,15 @@ package df.trees.ticketexporter;
 public class SnapSnap {
 	public Boolean INC_COMMENTS = true;
 	public Boolean INC_METRICS = true;
-	public Boolean JAR_RUN = true;
+	public Boolean JAR_RUN = false;
 	public Boolean FIRST_PAGE_ONLY = false;
-
 
 	public String ZD_TICKET_API = "/api/v2/tickets.json";
 	public String ZD_TICKET_SEARCH_API = "/api/v2/search.json?query=type:ticket%20order_by:created_at%20sort:asc";
-//	public String ZD_TICKET_INCREMENTAL_API = "/api/v2/incremental/tickets.json?start_time=1483228800";
 
 	public String ZD_TICKETS_API_SL = "api/v2/tickets?include=ticket_forms,groups,brands,users";
 	public String ZD_TICKET_METRICS_API = "/api/v2/ticket_metrics.json";
-	
+
 	public String delimiter = " | ";
 
 	public String ZD_BRAND_API(String zdDomain) {
