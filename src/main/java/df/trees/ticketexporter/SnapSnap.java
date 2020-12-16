@@ -6,6 +6,7 @@ public class SnapSnap {
 	public Boolean JAR_RUN = true;
 	public Boolean FIRST_PAGE_ONLY = false;
 
+
 	public String ZD_TICKET_API = "/api/v2/tickets.json";
 	public String ZD_TICKET_SEARCH_API = "/api/v2/search.json?query=type:ticket%20order_by:created_at%20sort:asc";
 //	public String ZD_TICKET_INCREMENTAL_API = "/api/v2/incremental/tickets.json?start_time=1483228800";
