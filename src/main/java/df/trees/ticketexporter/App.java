@@ -33,7 +33,7 @@ public class App {
 		long timeStart = (long) configJson.get("start_time");
 		long timeEnd = (long) configJson.get("end_time");
 
-		OBJECT_RUN objectRun = OBJECT_RUN.TICKETS;
+		OBJECT_RUN objectRun = OBJECT_RUN.USERS;
 
 		System.out.println("=== EXPORT DOMAIN: " + newDomain + " ===");
 		System.out.println("=== TIMESTAMP START: " + timeStart + " ===");

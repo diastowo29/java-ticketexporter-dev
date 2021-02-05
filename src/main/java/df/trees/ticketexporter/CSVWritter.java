@@ -273,11 +273,15 @@ public class CSVWritter {
 						if (usersList.getJSONObject(i).getJSONObject("user_fields").names() != null) {
 							for (int k = 0; k < usersList.getJSONObject(i).getJSONObject("user_fields").names()
 									.length(); k++) {
-								bw.write(
-										usersList.getJSONObject(i).getJSONObject("user_fields")
-												.get(usersList.getJSONObject(i).getJSONObject("user_fields").names()
-														.getString(k))
-												.toString().replaceAll("[\\t\\n\\r]+", " ") + "|");
+								try {									
+									bw.write(
+											usersList.getJSONObject(i).getJSONObject("user_fields")
+											.get(usersList.getJSONObject(i).getJSONObject("user_fields").names()
+													.getString(k))
+											.toString().replaceAll("[\\t\\n\\r]+", " ") + "|");
+								} catch (NullPointerException e) {
+									bw.write("null | ");
+								}
 							}
 						}
 					}
