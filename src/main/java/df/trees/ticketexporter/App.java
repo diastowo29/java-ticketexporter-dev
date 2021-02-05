@@ -30,32 +30,9 @@ public class App {
 		int incrementalParameter = 1;
 
 		String newDomain = configJson.get("domain").toString();
-		String newUsername = configJson.get("username").toString();
-		String newPassowrd = configJson.get("password").toString();
+		String newToken = configJson.get("token").toString();
 
-		OBJECT_RUN objectRun = OBJECT_RUN.SCHEDULE;
-
-//		if (!snap.JAR_RUN) {
-//			domain = newDomain;
-//			incrementalParameter = 1;
-//		} else {
-//			try {
-//				domain = args[0].toString();
-//				switch (objectRun) {
-//				case TICKETS:
-//					incrementalParameter = Integer.parseInt(args[1].toString());
-//					break;
-//				case METRIC_EVENTS:
-//					incrementalParameter = Integer.parseInt(args[1].toString());
-//					break;
-//				default:
-//					break;
-//				}
-//			} catch (IndexOutOfBoundsException e) {
-//				System.out.println("===== PARAMETER NULL =====");
-//				System.exit(0);
-//			}
-//		}
+		OBJECT_RUN objectRun = OBJECT_RUN.USERS;
 
 		Date date = new Date();
 		Calendar cal = Calendar.getInstance();
@@ -66,33 +43,32 @@ public class App {
 		long unixTime = (cal.getTimeInMillis() / 1000L);
 
 		System.out.println("=== EXPORT DOMAIN: " + newDomain + " ===");
-		System.out.println("=== DOMAIN USERNAME: " + newUsername + " ===");
-		System.out.println("=== DOMAIN PASSWORD: " + newPassowrd + " ===");
+		System.out.println("=== ZD TOKEN: " + newToken + " ===");
 
 		switch (objectRun) {
 		case TICKETS:
 			/* START FROM TICKET FIELDS */
 			tickets.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(newDomain),
-					snap.ZD_TICKET_INCREMENTAL_API(unixTime, newDomain), newDomain, newUsername, newPassowrd);
+					snap.ZD_TICKET_INCREMENTAL_API(unixTime, newDomain), newDomain, newToken);
 			break;
 		case TICKET_FIELDS:
-			ticketFields.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(newDomain), newDomain, newUsername, newPassowrd);
+			ticketFields.doGetTicketFields(snap.ZD_TICKET_FIELDS_API(newDomain), newDomain, newToken);
 			break;
 		case USERS:
-			users.doGetUser(snap.ZD_USER_API(newDomain), newDomain, newUsername, newPassowrd);
+			users.doGetUser(snap.ZD_USER_API(newDomain), newDomain, newToken);
 			break;
 		case ORGANIZATIONS:
-			organizations.doGetOrganizations(snap.ZD_ORGANIZATION_API(newDomain), newDomain, newUsername, newPassowrd);
+			organizations.doGetOrganizations(snap.ZD_ORGANIZATION_API(newDomain), newDomain, newToken);
 			break;
 		case BRANDS:
-			brands.doGetBrands(snap.ZD_BRAND_API(newDomain), newDomain, newUsername, newPassowrd);
+			brands.doGetBrands(snap.ZD_BRAND_API(newDomain), newDomain, newToken);
 			break;
 		case METRIC_EVENTS:
 			metricsEvent.doGetMetricsEvent(snap.ZD_TICKETEVENT_INCREMENTAL_API(unixTime, newDomain), newDomain,
-					newUsername, newPassowrd);
+					newToken);
 			break;
 		case SCHEDULE:
-			schedule.doGetSchedule(snap.ZD_SCHEDULE_API(newDomain), newDomain, newUsername, newPassowrd);
+			schedule.doGetSchedule(snap.ZD_SCHEDULE_API(newDomain), newDomain, newToken);
 			break;
 		default:
 			System.out.println("DEFAULT");

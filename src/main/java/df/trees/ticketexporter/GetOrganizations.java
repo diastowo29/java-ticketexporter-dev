@@ -9,13 +9,11 @@ public class GetOrganizations {
 	CSVWritter write = new CSVWritter();
 	int ticketPageCounter = 0;
 
-	public void doGetOrganizations(String organizationsApi, String zdDomain, String username, String password) {
+	public void doGetOrganizations(String organizationsApi, String zdDomain, String token) {
 		ticketPageCounter++;
 		SnapSnap snap = new SnapSnap();
-		String zD_Username = username;
-		String zD_Password = password;
 		System.out.print("Calling: " + organizationsApi + " ");
-		Unirest.get(organizationsApi).basicAuth(zD_Username, zD_Password).asJson().ifSuccess(response -> {
+		Unirest.get(organizationsApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode organizationsObj = response.getBody();
 
@@ -23,8 +21,7 @@ public class GetOrganizations {
 			write.doWriteOrganizations(organizationsList, ticketPageCounter, zdDomain);
 			if (!snap.FIRST_PAGE_ONLY) {
 				if (organizationsObj.getObject().get("next_page") != null) {
-					doGetOrganizations(organizationsObj.getObject().get("next_page").toString(), zdDomain, username,
-							password);
+					doGetOrganizations(organizationsObj.getObject().get("next_page").toString(), zdDomain, token);
 				}
 			}
 		}).ifFailure(response -> {

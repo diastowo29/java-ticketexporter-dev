@@ -7,12 +7,10 @@ import kong.unirest.json.JSONArray;
 public class GetTicketFields {
 	CSVWritter write = new CSVWritter();
 
-	public void doGetTicketFields(String ticketFieldsApi, String zdDomain, String username, String password) {
+	public void doGetTicketFields(String ticketFieldsApi, String zdDomain, String token) {
 		SnapSnap snap = new SnapSnap();
-		String zD_Username = username;
-		String zD_Password = password;
 		System.out.print("Calling: " + ticketFieldsApi + " ");
-		Unirest.get(ticketFieldsApi).basicAuth(zD_Username, zD_Password).asJson().ifSuccess(response -> {
+		Unirest.get(ticketFieldsApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode ticketFieldsObj = response.getBody();
 
@@ -26,8 +24,7 @@ public class GetTicketFields {
 			}
 			if (!snap.FIRST_PAGE_ONLY) {
 				if (ticketFieldsObj.getObject().get("next_page") != null) {
-					doGetTicketFields(ticketFieldsObj.getObject().get("next_page").toString(), zdDomain, username,
-							password);
+					doGetTicketFields(ticketFieldsObj.getObject().get("next_page").toString(), zdDomain, token);
 				}
 			}
 		}).ifFailure(response -> {

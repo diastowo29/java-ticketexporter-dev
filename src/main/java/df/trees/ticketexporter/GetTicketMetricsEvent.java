@@ -9,13 +9,11 @@ public class GetTicketMetricsEvent {
 	SnapSnap snap = new SnapSnap();
 	CSVWritter write = new CSVWritter();
 
-	public void doGetMetricsEvent(String metricsEventApi, String ZDDomain, String username, String password) {
+	public void doGetMetricsEvent(String metricsEventApi, String ZDDomain, String token) {
 		metricsPageCounter++;
 		SnapSnap snap = new SnapSnap();
-		String zD_Username = username;
-		String zD_Password = password;
 		System.out.print("Calling: " + metricsEventApi + " ");
-		Unirest.get(metricsEventApi).basicAuth(zD_Username, zD_Password).asJson().ifSuccess(response -> {
+		Unirest.get(metricsEventApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode metricsObj = response.getBody();
 
@@ -28,8 +26,7 @@ public class GetTicketMetricsEvent {
 							.substring(metricsObj.getObject().get("next_page").toString().indexOf("=") + 1);
 					if (currDate > Long.parseLong(unixTimeParam)) {
 						if (!metricsObj.getObject().get("next_page").toString().equals(metricsEventApi)) {
-							doGetMetricsEvent(metricsObj.getObject().get("next_page").toString(), ZDDomain, username,
-									password);
+							doGetMetricsEvent(metricsObj.getObject().get("next_page").toString(), ZDDomain, token);
 						}
 					}
 				}

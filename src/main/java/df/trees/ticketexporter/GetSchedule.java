@@ -10,9 +10,9 @@ public class GetSchedule {
 	CSVWritter write = new CSVWritter();
 	JSONArray scheduleList = new JSONArray();
 
-	public void doGetSchedule(String scheduleApi, String domain, String username, String password) {
+	public void doGetSchedule(String scheduleApi, String domain, String token) {
 		System.out.print("=== Getting all schedule === ");
-		Unirest.get(scheduleApi).basicAuth(username, password).asJson().ifSuccess(response -> {
+		Unirest.get(scheduleApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode scheduleListObj = response.getBody();
 			this.scheduleList = scheduleListObj.getObject().getJSONArray("schedules");
@@ -21,7 +21,7 @@ public class GetSchedule {
 			for (Object object : scheduleList) {
 				JSONObject schedule = (JSONObject) object;
 				doGetHolidays(snap.ZD_HOLIDAY_API(domain, schedule.get("id").toString()), domain,
-						schedule.get("name").toString(), username, password);
+						schedule.get("name").toString(), token);
 			}
 
 		}).ifFailure(response -> {
@@ -31,10 +31,9 @@ public class GetSchedule {
 		});
 	}
 
-	private void doGetHolidays(String holidaysApi, String domain, String scheduleName, String username,
-			String password) {
+	private void doGetHolidays(String holidaysApi, String domain, String scheduleName, String token) {
 		System.out.print("=== Getting holidays " + scheduleName + " === ");
-		Unirest.get(holidaysApi).basicAuth(username, password).asJson().ifSuccess(response -> {
+		Unirest.get(holidaysApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode holidaysObj = response.getBody();
 			JSONArray holidayList = holidaysObj.getObject().getJSONArray("holidays");

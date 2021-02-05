@@ -20,15 +20,14 @@ public class GetTickets {
 
 	int ticketPageCounter = 0;
 
-	public void doGetTicketFields(String ticketFieldsApi, String ticketApi, String zdDomain, String username,
-			String password) {
+	public void doGetTicketFields(String ticketFieldsApi, String ticketApi, String zdDomain, String token) {
 		System.out.println("=== Getting all ticket fields ===");
-		Unirest.get(ticketFieldsApi).basicAuth(username, password).asJson().ifSuccess(response -> {
+		Unirest.get(ticketFieldsApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode ticketListObj = response.getBody();
 
 			this.ticketFieldsList = ticketListObj.getObject().getJSONArray("ticket_fields");
-			doGetTickets(ticketApi, zdDomain, username, password);
+			doGetTickets(ticketApi, zdDomain, token);
 
 		}).ifFailure(response -> {
 			System.out.println("=== GET TICKET FIELDS - FAIL ===");
@@ -37,10 +36,10 @@ public class GetTickets {
 		});
 	}
 
-	public void doGetTickets(String ticketApi, String zdDomain, String username, String password) {
+	public void doGetTickets(String ticketApi, String zdDomain, String token) {
 		ticketPageCounter++;
 		System.out.print("Calling: " + ticketApi + " ");
-		Unirest.get(ticketApi).basicAuth(username, password).asJson().ifSuccess(response -> {
+		Unirest.get(ticketApi).header("Authorization", "basic " + token).asJson().ifSuccess(response -> {
 			System.out.println(response.getStatus());
 			JsonNode ticketObj = response.getBody();
 
@@ -54,7 +53,7 @@ public class GetTickets {
 					if (!ticketList.getJSONObject(i).getString("status").equals("deleted")) {
 						if (!(ticketList.getJSONObject(i).get("id").toString().equals("326")
 								|| ticketList.getJSONObject(i).get("id").toString().equals("539"))) {
-							doGetTicketCommments(ticketId, zdDomain, username, password);
+							doGetTicketCommments(ticketId, zdDomain, token);
 							if (commentSuccess) {
 								ticketList.getJSONObject(i).put("comments", commentsList);
 //								ticketList.getJSONObject(i).put("user_involved", usersList);
@@ -67,7 +66,7 @@ public class GetTickets {
 				}
 
 				if (snap.INC_METRICS) {
-					doGetTicketMetrics(ticketId, zdDomain, username, password);
+					doGetTicketMetrics(ticketId, zdDomain, token);
 				}
 			}
 
@@ -81,11 +80,10 @@ public class GetTickets {
 				if (ticketObj.getObject().get("next_page") != null) {
 					if (ticketObj.getObject().has("end_of_stream")) {
 						if (!ticketObj.getObject().getBoolean("end_of_stream")) {
-							doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username,
-									password);
+							doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, token);
 						}
 					} else {
-						doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, username, password);
+						doGetTickets(ticketObj.getObject().get("next_page").toString(), zdDomain, token);
 					}
 				}
 			}
@@ -96,10 +94,10 @@ public class GetTickets {
 		});
 	}
 
-	public void doGetTicketMetrics(String ticketId, String zdDomain, String username, String password) {
+	public void doGetTicketMetrics(String ticketId, String zdDomain, String token) {
 		System.out.print("Getting ticket metrics ID: " + ticketId + " - ");
 
-		Unirest.get(snap.ZD_TICKET_METRICS_BYID_API(ticketId, zdDomain)).basicAuth(username, password).asJson()
+		Unirest.get(snap.ZD_TICKET_METRICS_BYID_API(ticketId, zdDomain)).header("Authorization", "basic " + token).asJson()
 				.ifSuccess(metricsResponse -> {
 					System.out.println(metricsResponse.getStatus());
 					JsonNode ticketMetricsObj = metricsResponse.getBody();
@@ -114,7 +112,7 @@ public class GetTickets {
 
 	}
 
-	public void doGetTicketCommments(String ticketId, String zdDomain, String username, String password) {
+	public void doGetTicketCommments(String ticketId, String zdDomain, String token) {
 
 		System.out.print("Getting ticket comment ID: " + ticketId + " - ");
 
@@ -122,7 +120,7 @@ public class GetTickets {
 		commentSuccess = false;
 
 		try {
-			Unirest.get(snap.ZD_TICKET_COMMENT_API(ticketId, zdDomain)).basicAuth(username, password).asJson()
+			Unirest.get(snap.ZD_TICKET_COMMENT_API(ticketId, zdDomain)).header("Authorization", "basic " + token).asJson()
 					.ifSuccess(commentResponse -> {
 						System.out.println(commentResponse.getStatus());
 						JsonNode ticketCommentObj = commentResponse.getBody();
@@ -139,7 +137,7 @@ public class GetTickets {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("retrying...");
-			doGetTicketCommments(ticketId, zdDomain, username, password);
+			doGetTicketCommments(ticketId, zdDomain, token);
 		}
 
 	}
